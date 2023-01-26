@@ -1,7 +1,11 @@
 package domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ItemLocation {
+    @JsonProperty("id")
     private String id;
+    @JsonProperty("location_name")
     private String locationName;
 
     public ItemLocation(String id,String locationName)
