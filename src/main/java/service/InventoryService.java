@@ -27,6 +27,7 @@ public class InventoryService {
         inventory.setItemCategoryId(itemCategory);
         inventory.setItemLocation(itemLocation);
 
+        con.close();
         return inventory;
     }
 
@@ -55,7 +56,7 @@ public class InventoryService {
 
                 inventoryList.add(inventory);
             }
-
+            con.close();
             return inventoryList;
     }
 
@@ -84,7 +85,7 @@ public class InventoryService {
 
                 inventoryList.add(inventory);
             }
-
+            con.close();
             return inventoryList;
     }
     public List<Inventory> getInventoryByLocation(String locationId) throws Exception
@@ -112,7 +113,7 @@ public class InventoryService {
 
                 inventoryList.add(inventory);
             }
-
+            con.close();
             return inventoryList;
     }
 
@@ -142,7 +143,7 @@ public class InventoryService {
 
                 inventoryList.add(inventory);
             }
-
+            con.close();
             return inventoryList;
     }
 
@@ -161,6 +162,7 @@ public class InventoryService {
             int rs3 = st.executeUpdate("insert into itemlocation (id, locationname)" + "values(" + "'" + inventory.getItemLocation().getId() +"'" +
                     "," + "'" + inventory.getItemLocation().getLocationName() +"'" + ")");
 
+            con.close();
             return inventory;
     }
 
@@ -179,6 +181,7 @@ public class InventoryService {
             st.executeQuery("UPDATE itemlocation SET id = " + inventory.getItemLocation().getId() +"WHERE id=" + inventoryId);
             st.executeQuery("UPDATE itemLocation SET location_name = " + inventory.getItemLocation().getLocationName() +"WHERE id=" + inventoryId);
 
+            con.close();
             return inventory;
     }
 
@@ -189,5 +192,6 @@ public class InventoryService {
             Statement st = con.createStatement();
 
             int rs = st.executeUpdate("DELETE FROM inventory WHERE id = " + id);
+            con.close();
     }
 }

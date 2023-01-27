@@ -15,10 +15,13 @@ public class Inventory {
     @JsonProperty("item_location")
     private ItemLocation itemLocation;
 
-    public Inventory(String id,String itemName, int itemQuantity,String itemCategoryId,String itemLocationId)
+    public Inventory(String id,String itemName, int itemQuantity,ItemCategory itemCategoryId,ItemLocation itemLocationId)
     {
+        this.id = id;
         this.itemName = itemName;
         this.itemQuantity = itemQuantity;
+        this.itemCategory = itemCategoryId;
+        this.itemLocation = itemLocationId;
     }
 
     public Inventory()

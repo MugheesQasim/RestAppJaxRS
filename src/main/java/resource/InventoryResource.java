@@ -15,6 +15,11 @@ public class InventoryResource {
 
         InventoryService inventoryService = InventoryService.getInstance();
 
+        public static InventoryResource getInstance()
+        {
+                return new InventoryResource();
+        }
+
         @Path("/hello")
         @GET
         @Produces(MediaType.TEXT_PLAIN)
