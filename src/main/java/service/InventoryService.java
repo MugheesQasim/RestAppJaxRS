@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import domain.*;
-import resource.InventoryResource;
 
 
 public class InventoryService {
@@ -13,45 +12,31 @@ public class InventoryService {
         return new InventoryService();
     }
 
-    public Inventory getInventoryById(String id)
+    public Inventory getInventoryById(String id) throws Exception
     {
-        try
-        {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
-            Statement st = con.createStatement();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM inventory JOIN itemcategory join itemlocation ON inventory.item_category_id=itemcategory.id AND inventory.item_location_id=itemlocation.id WHERE inventory.id =" + id);
+        rs.next();
+        Inventory inventory = new Inventory();
+        inventory.setId(rs.getString(1));
+        inventory.setItemName(rs.getString(2));
+        inventory.setItemQuantity(rs.getInt(3));
+        ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
+        inventory.setItemCategoryId(itemCategory);
+        inventory.setItemLocation(itemLocation);
 
-            ResultSet rs = st.executeQuery("SELECT * FROM inventory JOIN itemcategory join itemlocation ON inventory.item_category_id=itemcategory.id AND inventory.item_location_id=itemlocation.id WHERE inventory.id =" + id);
-            rs.next();
-            Inventory inventory = new Inventory();
-
-            inventory.setId(rs.getString(1));
-            inventory.setItemName(rs.getString(2));
-            inventory.setItemQuantity(rs.getInt(3));
-
-            ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
-            ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
-            inventory.setItemCategoryId(itemCategory);
-            inventory.setItemLocationId(itemLocation);
-
-            return inventory;
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
-        return null;
+        return inventory;
     }
 
-    public List<Inventory> getInventoryAll()
+    public List<Inventory> getInventoryAll() throws Exception
     {
-        try
-        {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
             Statement st = con.createStatement();
 
-            ResultSet rs = st.executeQuery("SELECT * FROM inventory");
+            ResultSet rs = st.executeQuery("select * from inventory JOIN itemcategory JOIN itemlocation ON inventory.item_category_id = itemcategory.id AND inventory.item_location_id = itemlocation.id");
 
             List<Inventory> inventoryList = new ArrayList<>();
 
@@ -66,24 +51,16 @@ public class InventoryService {
                 ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
                 ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
                 inventory.setItemCategoryId(itemCategory);
-                inventory.setItemLocationId(itemLocation);
+                inventory.setItemLocation(itemLocation);
 
                 inventoryList.add(inventory);
             }
 
             return inventoryList;
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
-        return null;
     }
 
-    public List<Inventory> getInventoryByCategory(String categoryId)
+    public List<Inventory> getInventoryByCategory(String categoryId) throws Exception
     {
-        try
-        {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
             Statement st = con.createStatement();
@@ -103,23 +80,15 @@ public class InventoryService {
                 ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
                 ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
                 inventory.setItemCategoryId(itemCategory);
-                inventory.setItemLocationId(itemLocation);
+                inventory.setItemLocation(itemLocation);
 
                 inventoryList.add(inventory);
             }
 
             return inventoryList;
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
-        return null;
     }
-    public List<Inventory> getInventoryByLocation(String locationId)
+    public List<Inventory> getInventoryByLocation(String locationId) throws Exception
     {
-        try
-        {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
             Statement st = con.createStatement();
@@ -139,30 +108,22 @@ public class InventoryService {
                 ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
                 ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
                 inventory.setItemCategoryId(itemCategory);
-                inventory.setItemLocationId(itemLocation);
+                inventory.setItemLocation(itemLocation);
 
                 inventoryList.add(inventory);
             }
 
             return inventoryList;
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
-        return null;
     }
 
-    public List<Inventory> getInventoryByCategoryAndLocation(String categoryId,String locationId)
+    public List<Inventory> getInventoryByCategoryAndLocation(String categoryId,String locationId) throws Exception
     {
-        try
-        {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
             Statement st = con.createStatement();
 
             ResultSet rs = st.executeQuery("select * from inventory JOIN itemcategory JOIN itemlocation ON inventory.item_category_id = itemcategory.id AND inventory.item_location_id = itemlocation.id WHERE itemcategory.id=" + categoryId +
-                    "AND itemlocation.id = " + locationId);
+                    " OR itemlocation.id = " + locationId);
 
             List<Inventory> inventoryList = new ArrayList<>();
 
@@ -177,51 +138,34 @@ public class InventoryService {
                 ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
                 ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
                 inventory.setItemCategoryId(itemCategory);
-                inventory.setItemLocationId(itemLocation);
+                inventory.setItemLocation(itemLocation);
 
                 inventoryList.add(inventory);
             }
 
             return inventoryList;
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
-        return null;
     }
 
-    public void addItem(Inventory inventory)
+    public Inventory addItem(Inventory inventory) throws Exception
     {
-        try
-        {
             System.out.println(inventory);
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
             Statement st = con.createStatement();
 
-            int rs = st.executeUpdate("insert into inventory (id, item_name, item_quantity, item_category_id, item_location_id)"
-                            + " values (" + "'"+inventory.getId() +"'" + "," + "'" + inventory.getItemName()+ "'" +","+ "'" + inventory.getItemQuantity() + "'"
-                            + "," + "'" + inventory.getItemCategory().getId() + "'" + "," + "'" + inventory.getItemLocationId().getId() +"'" + ")");
+            int rs = st.executeUpdate("insert into inventory (item_name, item_quantity, item_category_id, item_location_id)"
+                            + " values (" +"'"+ inventory.getItemName()+ "'" +","+ "'" + inventory.getItemQuantity() + "'"
+                            + "," + "'" + inventory.getItemCategory().getId() + "'" + "," + "'" + inventory.getItemLocation().getId() +"'" + ")");
             int rs2 = st.executeUpdate("insert into itemcategory (id, categoryname)" + "values(" + "'"+inventory.getItemCategory().getId()+"'" +
                     "," + "'" + inventory.getItemCategory().getCategoryName() + "'" + ")");
-            int rs3 = st.executeUpdate("insert into itemlocation (id, locationname)" + "values(" + "'" + inventory.getItemLocationId().getId() +"'" +
-                    "," + "'" + inventory.getItemLocationId().getLocationName() +"'" + ")");
+            int rs3 = st.executeUpdate("insert into itemlocation (id, locationname)" + "values(" + "'" + inventory.getItemLocation().getId() +"'" +
+                    "," + "'" + inventory.getItemLocation().getLocationName() +"'" + ")");
 
-            System.out.println(rs);
-            System.out.println(rs2);
-            System.out.println(rs3);;
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
+            return inventory;
     }
 
-    public void updateInventory(Inventory inventory,String inventoryId)
+    public Inventory updateInventory(Inventory inventory,String inventoryId) throws Exception
     {
-        try
-        {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
             Statement st = con.createStatement();
@@ -229,31 +173,21 @@ public class InventoryService {
             st.executeQuery("UPDATE inventory SET item_name = " +inventory.getItemName() +"WHERE id=" + inventoryId);
             st.executeQuery("UPDATE inventory SET item_quantity = " + inventory.getItemQuantity() +"WHERE id=" + inventoryId);
             st.executeQuery("UPDATE inventory SET item_category_id = "+inventory.getItemCategory().getId() +"WHERE id=" + inventoryId);
-            st.executeQuery("UPDATE inventory SET item_location_id = " + inventory.getItemLocationId().getId() +"WHERE id=" + inventoryId);
+            st.executeQuery("UPDATE inventory SET item_location_id = " + inventory.getItemLocation().getId() +"WHERE id=" + inventoryId);
             st.executeQuery("UPDATE itemCategory SET id = " + inventory.getItemCategory().getId() +"WHERE id=" + inventoryId);
             st.executeQuery("UPDATE itemCategory SET category_name = " + inventory.getItemCategory().getCategoryName() +"WHERE id=" + inventoryId);
-            st.executeQuery("UPDATE itemlocation SET id = " + inventory.getItemLocationId().getId() +"WHERE id=" + inventoryId);
-            st.executeQuery("UPDATE itemLocation SET location_name = " + inventory.getItemLocationId().getLocationName() +"WHERE id=" + inventoryId);
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
+            st.executeQuery("UPDATE itemlocation SET id = " + inventory.getItemLocation().getId() +"WHERE id=" + inventoryId);
+            st.executeQuery("UPDATE itemLocation SET location_name = " + inventory.getItemLocation().getLocationName() +"WHERE id=" + inventoryId);
+
+            return inventory;
     }
 
-    public void deleteInventory(String id)
+    public void deleteInventory(String id) throws Exception
     {
-        try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment", "root", "root");
             Statement st = con.createStatement();
 
-            st.executeQuery("DELETE FROM inventory WHERE id = " + id);
-
-        }
-        catch(Exception exc)
-        {
-            System.out.println(exc);
-        }
+            int rs = st.executeUpdate("DELETE FROM inventory WHERE id = " + id);
     }
 }

@@ -1,7 +1,6 @@
 package domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Inventory {
 
@@ -62,11 +61,11 @@ public class Inventory {
         this.itemCategory = itemCategory;
     }
 
-    public ItemLocation getItemLocationId()
+    public ItemLocation getItemLocation()
     {
         return itemLocation;
     }
-    public void setItemLocationId(ItemLocation itemLocation)
+    public void setItemLocation(ItemLocation itemLocation)
     {
         this.itemLocation = itemLocation;
     }
