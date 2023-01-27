@@ -20,8 +20,8 @@ public class InventoryResourceTest extends TestCase {
     }
 
     public void testGetAllInventory() {
-        Assert.assertEquals(inventoryResource.getAllInventory("99","99"),Response.status(Response.Status.BAD_REQUEST));
-        Assert.assertEquals(inventoryResource.getAllInventory("-30","-20"),Response.status(Response.Status.BAD_REQUEST));
+        Assert.assertEquals(inventoryResource.getAllInventory("99","99","mughees"),Response.status(Response.Status.BAD_REQUEST));
+        Assert.assertEquals(inventoryResource.getAllInventory("-30","-20","hassan"),Response.status(Response.Status.BAD_REQUEST));
     }
 
     public void testAddNewInventoryItem() {

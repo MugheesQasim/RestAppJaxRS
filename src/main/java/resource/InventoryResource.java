@@ -47,18 +47,27 @@ public class InventoryResource {
         @Path("/list")
         @GET
         @Produces(MediaType.APPLICATION_JSON)
-        public Response getAllInventory(@QueryParam("category") String category,@QueryParam("location") String location)
+        public Response getAllInventory(@QueryParam("category") String category,@QueryParam("location") String location,@HeaderParam("authorization") String header)
         {
                 try
                 {
-                        if(category==null && location==null)
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryAll()).build();
-                        else if(category!=null && location==null)
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByCategory(category)).build();
-                        else if(category==null && location!=null)
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByLocation(location)).build();
+                        if(inventoryService.validateUser(header))
+                        {
+                             if(category==null && location==null)
+                                     return Response.status(Response.Status.OK).entity(inventoryService.getInventoryAll()).build();
+                             else if(category!=null && location==null)
+                                     return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByCategory(category)).build();
+                             else if(category==null && location!=null)
+                                     return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByLocation(location)).build();
+                             else
+                                     return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByCategoryAndLocation(category,location)).build();
+                        }
                         else
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByCategoryAndLocation(category,location)).build();
+                        {
+                                String message = "{\"error_message\" : \"user not authorized\"}";
+                                return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+                        }
+
                 }
                 catch(Exception exc)
                 {

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import domain.*;
 
+import javax.xml.bind.DatatypeConverter;
+
 
 public class InventoryService {
     public static InventoryService getInstance()
@@ -193,5 +195,24 @@ public class InventoryService {
 
             int rs = st.executeUpdate("DELETE FROM inventory WHERE id = " + id);
             con.close();
+    }
+    public boolean validateUser(String user) throws Exception
+    {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
+        Statement st = con.createStatement();
+
+        String[] authParts = user.split("\\s+");
+        String authInfo = authParts[1];
+        byte[] bytes  =  DatatypeConverter.parseBase64Binary(authInfo);
+        String decodedAuth = new String(bytes);
+        String[] userNameAndPassword = decodedAuth.split(":");
+
+        ResultSet rs = st.executeQuery("select * from users WHERE username=" + "'" + userNameAndPassword[0] + "'" + " AND password=" + "'"+ userNameAndPassword[1]+"'");
+
+        if(rs.next())
+            return true;
+        else
+            return false;
     }
 }
