@@ -1,5 +1,8 @@
 package service;
 
+import java.io.File;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,6 +201,10 @@ public class InventoryService {
     }
     public boolean validateUser(String user) throws Exception
     {
+        AsymmetricCryptography ac = new AsymmetricCryptography();
+        PrivateKey privateKey = ac.getPrivate("KeyPair/privateKey");
+        PublicKey publicKey = ac.getPublic("KeyPair/publicKey");
+
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
         Statement st = con.createStatement();
@@ -207,12 +214,38 @@ public class InventoryService {
         byte[] bytes  =  DatatypeConverter.parseBase64Binary(authInfo);
         String decodedAuth = new String(bytes);
         String[] userNameAndPassword = decodedAuth.split(":");
-
-        ResultSet rs = st.executeQuery("select * from users WHERE username=" + "'" + userNameAndPassword[0] + "'" + " AND password=" + "'"+ userNameAndPassword[1]+"'");
+        System.out.println(userNameAndPassword[0]);
+        ResultSet rs = st.executeQuery("select * from users WHERE username=" + "'" + ac.encryptText(userNameAndPassword[0],privateKey) + "'" + " AND password=" + "'"+ ac.encryptText(userNameAndPassword[1],privateKey)+"'");
 
         if(rs.next())
             return true;
         else
             return false;
+    }
+
+    private static void addUser(String username, String password) throws Exception
+    {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/assignment","root","root");
+        Statement st = con.createStatement();
+
+        int changedRows = st.executeUpdate("insert into users(username,password)" + " VALUES(" + "'" + username+ "'" + "," + "'" + password+ "'" + ")");
+        con.close();
+    }
+
+    public static void main(String[] args) throws Exception{
+        String username1 = "Mughees";
+        String password1 = "123";
+
+        String username2 = "Ali";
+        String password2 = "1234";
+
+
+        AsymmetricCryptography ac = new AsymmetricCryptography();
+        PrivateKey privateKey = ac.getPrivate("KeyPair/privateKey");
+        PublicKey publicKey = ac.getPublic("KeyPair/publicKey");
+
+        addUser(ac.encryptText(username1, privateKey),ac.encryptText(password1, privateKey));
+        addUser(ac.encryptText(username2, privateKey),ac.encryptText(password2, privateKey));
     }
 }

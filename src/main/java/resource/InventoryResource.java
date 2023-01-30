@@ -1,14 +1,16 @@
 package resource;
 
-
 import java.util.List;
 import domain.Inventory;
 import domain.ItemLocation;
 import service.InventoryService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 
 @Path("/inventory")
 public class InventoryResource {
@@ -76,14 +78,22 @@ public class InventoryResource {
                 }
         }
 
+
         @POST
         @Path("/add")
         @Produces(MediaType.APPLICATION_JSON)
         @Consumes(MediaType.APPLICATION_JSON)
-        public Response addNewInventoryItem(Inventory inventory) {
+        public Response addNewInventoryItem(Inventory inventory,@HeaderParam("authorization") String header) {
                 try
                 {
-                        return Response.status(Response.Status.OK).entity(inventoryService.addItem(inventory)).build();
+                        System.out.println("Header:" + header);
+                        if(inventoryService.validateUser(header))
+                                return Response.status(Response.Status.OK).entity(inventoryService.addItem(inventory)).build();
+                        else
+                        {
+                                String message = "{\"error_message\" : \"user not authorized\"}";
+                                return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+                        }
                 }
                 catch(Exception exc)
                 {
