@@ -1,9 +1,7 @@
 package service;
 
+import Config.HikariCPService;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
-
-import java.util.concurrent.ExecutionException;
 
 public class HikariCPServiceTest extends TestCase {
 

@@ -15,13 +15,13 @@ public class Inventory {
     @JsonProperty("item_location")
     private ItemLocation itemLocation;
 
-    public Inventory(String id,String itemName, int itemQuantity,ItemCategory itemCategoryId,ItemLocation itemLocationId)
+    public Inventory(String id,String itemName, int itemQuantity,ItemCategory itemCategory,ItemLocation itemLocation)
     {
         this.id = id;
         this.itemName = itemName;
         this.itemQuantity = itemQuantity;
-        this.itemCategory = itemCategoryId;
-        this.itemLocation = itemLocationId;
+        this.itemCategory = itemCategory;
+        this.itemLocation = itemLocation;
     }
 
     public Inventory()
@@ -76,6 +76,6 @@ public class Inventory {
     @Override
     public String toString()
     {
-        return id + "," + itemName + " ," + itemQuantity + "," + itemCategory.getCategoryName() + "," + itemLocation.getLocationName();
+        return "{" + id + "," + itemName + "," + itemQuantity + "," + "{" + itemCategory.getId() + "," + itemCategory.getCategoryName() + "}" + "," + "{"+ itemLocation.getId() + "," +itemLocation.getLocationName() + "}"+"}";
     }
 }

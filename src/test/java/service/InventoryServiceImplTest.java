@@ -6,8 +6,8 @@ import domain.ItemLocation;
 
 import junit.framework.*;
 
-public class InventoryServiceTest extends TestCase{
-    InventoryService inventoryService = InventoryService.getInstance();
+public class InventoryServiceImplTest extends TestCase{
+    InventoryServiceImpl inventoryServiceImpl = InventoryServiceImpl.getInstance();
 
     public void testGetInventoryById() {
         System.out.println("Inside test get inventoryById");
@@ -17,9 +17,9 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            Assert.assertNotNull(inventoryService.getInventoryById("7"));
-            Assert.assertEquals(inventoryService.getInventoryById(id),null);
-            Assert.assertEquals(inventoryService.getInventoryById(id2),null);
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryById("7"));
+            Assert.assertEquals(inventoryServiceImpl.getInventoryById(id),null);
+            Assert.assertEquals(inventoryServiceImpl.getInventoryById(id2),null);
         }
         catch(Exception exc)
         {
@@ -32,7 +32,7 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            Assert.assertNotNull(inventoryService.getInventoryAll());
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryAll());
         }
         catch(Exception exc)
         {
@@ -49,9 +49,9 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            Assert.assertNotNull(inventoryService.getInventoryByCategory(category3));
-            Assert.assertNotNull(inventoryService.getInventoryByCategory(category));
-            Assert.assertNotNull(inventoryService.getInventoryByCategory(category2));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategory(category3));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategory(category));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategory(category2));
         }
         catch(Exception exc)
         {
@@ -68,9 +68,9 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            Assert.assertNotNull(inventoryService.getInventoryByLocation(location3));
-            Assert.assertNotNull(inventoryService.getInventoryByCategory(location));
-            Assert.assertNotNull(inventoryService.getInventoryByCategory(location2));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByLocation(location3));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategory(location));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategory(location2));
         }
         catch(Exception exc)
         {
@@ -88,10 +88,10 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            Assert.assertNotNull(inventoryService.getInventoryByCategoryAndLocation("24","7"));
-            Assert.assertNull(inventoryService.getInventoryByCategoryAndLocation(null,null));
-            Assert.assertNotNull(inventoryService.getInventoryByCategoryAndLocation(category,location));
-            Assert.assertNotNull(inventoryService.getInventoryByCategoryAndLocation(category2,location2));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategoryAndLocation("24","7"));
+            Assert.assertNull(inventoryServiceImpl.getInventoryByCategoryAndLocation(null,null));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategoryAndLocation(category,location));
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryByCategoryAndLocation(category2,location2));
         }
         catch(Exception exc)
         {
@@ -112,12 +112,12 @@ public class InventoryServiceTest extends TestCase{
         try
         {
             String header = "Basic TXVnaGVlczoxMjM=";
-            if(inventoryService.validateUser(header))
+            if(inventoryServiceImpl.validateUser(header))
                 System.out.println("User is validated");
             else
                 System.out.println("Invalid User");
-            Assert.assertNotNull(inventoryService.addItem(inventory));
-            Assert.assertNotNull(inventoryService.addItem(inventory1));
+            Assert.assertNotNull(inventoryServiceImpl.addItem(inventory));
+            Assert.assertNotNull(inventoryServiceImpl.addItem(inventory1));
         }
         catch(Exception exc)
         {
@@ -137,8 +137,8 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            Assert.assertNotNull(inventoryService.updateInventory(inventory1,"6"));
-            Assert.assertSame(inventoryService.updateInventory(inventory1,"6"),inventory1);
+            Assert.assertNotNull(inventoryServiceImpl.updateInventory(inventory1,"6"));
+            Assert.assertSame(inventoryServiceImpl.updateInventory(inventory1,"6"),inventory1);
         }
         catch(Exception exc)
         {
@@ -158,11 +158,11 @@ public class InventoryServiceTest extends TestCase{
 
         try
         {
-            inventoryService.deleteInventory("6");
-            Assert.assertNotNull(inventoryService.getInventoryById("6"));
+            inventoryServiceImpl.deleteInventory("6");
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryById("6"));
 
-            inventoryService.deleteInventory("5");
-            Assert.assertNotNull(inventoryService.getInventoryById("5"));
+            inventoryServiceImpl.deleteInventory("5");
+            Assert.assertNotNull(inventoryServiceImpl.getInventoryById("5"));
         }
         catch(Exception exc)
         {
@@ -174,7 +174,7 @@ public class InventoryServiceTest extends TestCase{
         String header = "Basic TXVnaGVlczoxMjM=";
         try
         {
-            inventoryService.validateUser(header);
+            inventoryServiceImpl.validateUser(header);
         }
         catch (Exception exc)
         {

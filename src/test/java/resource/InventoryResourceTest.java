@@ -3,15 +3,14 @@ package resource;
 import domain.Inventory;
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import resource.InventoryResource;
-import service.InventoryService;
 
 import javax.ws.rs.core.Response;
 
 public class InventoryResourceTest extends TestCase {
 
-    InventoryResource inventoryResource = InventoryResource.getInstance();
 
+    InventoryResource inventoryResource = new InventoryResource();
+    //todo use annotations for testing by junit 5
     public void testGetInventory() {
         String test1 = "1";
         String test2 = "testing";

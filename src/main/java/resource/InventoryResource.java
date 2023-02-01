@@ -1,12 +1,9 @@
 package resource;
 
-import java.util.List;
 import domain.Inventory;
-import domain.ItemLocation;
+import service.InventoryServiceImpl;
 import service.InventoryService;
 
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -15,12 +12,7 @@ import javax.ws.rs.core.Response;
 @Path("/inventory")
 public class InventoryResource {
 
-        InventoryService inventoryService = InventoryService.getInstance();
-
-        public static InventoryResource getInstance()
-        {
-                return new InventoryResource();
-        }
+        InventoryService inventoryServiceImpl = InventoryServiceImpl.getInstance();
 
         // Object to JSON
         @Path("/{inventoryId}")
@@ -29,13 +21,12 @@ public class InventoryResource {
         public Response getInventory(@PathParam("inventoryId") String inventoryId) {
                 try
                 {
-                        Inventory inventory = inventoryService.getInventoryById(inventoryId);
+                        Inventory inventory = inventoryServiceImpl.getInventoryById(inventoryId);
                         return Response.status(Response.Status.OK).entity(inventory).build();
                 }
                 catch (Exception exc)
                 {
-                        String message = "{\"error_message\" : \"invalid id in request\"}";
-                        return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+                        return Response.status(Response.Status.BAD_REQUEST).entity(exc.getMessage()).build();
                 }
         }
 
@@ -47,13 +38,13 @@ public class InventoryResource {
                 try
                 {
                         if(category==null && location==null)
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryAll()).build();
+                                return Response.status(Response.Status.OK).entity(inventoryServiceImpl.getInventoryAll()).build();
                         else if(category!=null && location==null)
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByCategory(category)).build();
-                        else if(category==null && location!=null)
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByLocation(location)).build();
+                                return Response.status(Response.Status.OK).entity(inventoryServiceImpl.getInventoryByCategory(category)).build();
+                        else if(category == null && location != null)
+                                return Response.status(Response.Status.OK).entity(inventoryServiceImpl.getInventoryByLocation(location)).build();
                         else
-                                return Response.status(Response.Status.OK).entity(inventoryService.getInventoryByCategoryAndLocation(category,location)).build();
+                                return Response.status(Response.Status.OK).entity(inventoryServiceImpl.getInventoryByCategoryAndLocation(category,location)).build();
 
                 }
                 catch(Exception exc)
@@ -65,14 +56,13 @@ public class InventoryResource {
 
 
         @POST
-        @Path("/add")
         @Produces(MediaType.APPLICATION_JSON)
         @Consumes(MediaType.APPLICATION_JSON)
         public Response addNewInventoryItem(Inventory inventory,@HeaderParam("authorization") String header) {
                 try
                 {
-                        if(inventoryService.validateUser(header))
-                                return Response.status(Response.Status.OK).entity(inventoryService.addItem(inventory)).build();
+                        if(inventoryServiceImpl.validateUser(header))
+                                return Response.status(Response.Status.OK).entity(inventoryServiceImpl.addItem(inventory)).build();
                         else
                         {
                                 String message = "{\"message\" : \"Unauthorized user\"}";
@@ -87,16 +77,16 @@ public class InventoryResource {
         }
 
         @PUT
-        @Path("/update/{inventoryId}")
+        @Path("/{inventoryId}")
         @Produces(MediaType.APPLICATION_JSON)
         @Consumes(MediaType.APPLICATION_JSON)
         public Response updateItem(Inventory inventory,@PathParam("inventoryId") String inventoryId,@HeaderParam("authorization")String header)
         {
                 try
                 {
-                        if(inventoryService.validateUser(header))
+                        if(inventoryServiceImpl.validateUser(header))
                         {
-                                return Response.status(Response.Status.OK).entity(inventoryService.updateInventory(inventory,inventoryId)).build();
+                                return Response.status(Response.Status.OK).entity(inventoryServiceImpl.updateInventory(inventory,inventoryId)).build();
                         }
                         else
                         {
@@ -117,10 +107,10 @@ public class InventoryResource {
         public Response deleteItem(@PathParam("inventoryId") String inventoryId,@HeaderParam("authorization") String header)
         {
                 try{
-                        if(inventoryService.validateUser(header))
+                        if(inventoryServiceImpl.validateUser(header))
                         {
                                 String message = "{\"message\" : \"OK\"}";
-                                inventoryService.deleteInventory(inventoryId);
+                                inventoryServiceImpl.deleteInventory(inventoryId);
                                 return Response.status(Response.Status.OK).entity(message).build();
                         }
                         else
