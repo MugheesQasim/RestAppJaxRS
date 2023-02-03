@@ -4,12 +4,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.DatatypeConverter;
-
-import Config.Constants;
 import Config.HikariCPService;
 import domain.*;
 import domain.sql.SqlQuery;
+
 
 public class InventoryServiceImpl implements InventoryService{
     public static InventoryServiceImpl getInstance()
@@ -17,8 +15,7 @@ public class InventoryServiceImpl implements InventoryService{
         return new InventoryServiceImpl();
     }
 
-    public Inventory getInventoryById(String id) throws Exception
-    {
+    public Inventory getInventoryById(String id) throws SQLException {
         Connection con = null;
         PreparedStatement st = null;
         ResultSet rs = null;
@@ -30,7 +27,7 @@ public class InventoryServiceImpl implements InventoryService{
             st.setString(1,id);
             rs = st.executeQuery();
 
-            inventory = getInventory(rs);
+            inventory = getInventoryId(rs);
         }
         finally {
             if(st!=null)
@@ -42,12 +39,30 @@ public class InventoryServiceImpl implements InventoryService{
         }
         return inventory;
     }
-    public List<Inventory> getInventoryAll() throws Exception
+
+    public List<Inventory> getInventory(String category,String location) throws SQLException
+    {
+        List<Inventory> inventoryList;
+
+        if(category==null && location==null)
+            inventoryList = getInventoryAll();
+        else if(category!=null && location==null)
+            inventoryList = getInventoryByCategory(category);
+        else if(category == null)
+            inventoryList = getInventoryByLocation(location);
+        else
+            inventoryList = getInventoryByCategoryAndLocation(category,location);
+
+        return inventoryList;
+    }
+
+    public List<Inventory> getInventoryAll() throws SQLException
     {
         Connection con = null;
         PreparedStatement st = null;
         ResultSet rs = null;
         List<Inventory> inventoryList;
+
             try
             {
                 con = HikariCPService.getInstance().getConnection();
@@ -68,7 +83,7 @@ public class InventoryServiceImpl implements InventoryService{
             return inventoryList;
     }
 
-    public List<Inventory> getInventoryByCategory(String categoryId) throws Exception
+    public List<Inventory> getInventoryByCategory(String categoryId) throws SQLException
     {
             Connection con = null;
             PreparedStatement st = null;
@@ -95,7 +110,7 @@ public class InventoryServiceImpl implements InventoryService{
 
             return inventoryList;
     }
-    public List<Inventory> getInventoryByLocation(String locationId) throws Exception
+    public List<Inventory> getInventoryByLocation(String locationId) throws SQLException
     {
             Connection con = null;
             PreparedStatement st = null;
@@ -123,7 +138,7 @@ public class InventoryServiceImpl implements InventoryService{
             return inventoryList;
     }
 
-    public List<Inventory> getInventoryByCategoryAndLocation(String categoryId,String locationId) throws Exception
+    public List<Inventory> getInventoryByCategoryAndLocation(String categoryId,String locationId) throws SQLException
     {
             Connection con = null;
             PreparedStatement st = null;
@@ -152,7 +167,7 @@ public class InventoryServiceImpl implements InventoryService{
             return inventoryList;
     }
 
-    public Inventory addItem(Inventory inventory) throws Exception
+    public Inventory addItem(Inventory inventory) throws SQLException
     {
             Connection con = null;
             PreparedStatement st = null;
@@ -162,33 +177,36 @@ public class InventoryServiceImpl implements InventoryService{
                 con.setAutoCommit(false);
 
                 st = con.prepareStatement(SqlQuery.MYSQL_INSERT_QUERY_CATEGORY);
-                st.setString(1,inventory.getItemCategory().getId());
-                st.setString(2,inventory.getItemCategory().getCategoryName());
+                st.setString(1,inventory.getItem_category().getId());
+                st.setString(2,inventory.getItem_category().getcategory_name());
                 st.executeUpdate();
 
                 st = con.prepareStatement(SqlQuery.MYSQL_INSERT_QUERY_LOCATION);
-                st.setString(1,inventory.getItemLocation().getId());
-                st.setString(2,inventory.getItemLocation().getLocationName());
+                st.setString(1,inventory.getItem_location().getId());
+                st.setString(2,inventory.getItem_location().getLocation_name());
                 st.executeUpdate();
 
                 st = con.prepareStatement(SqlQuery.MYSQL_INSERT_QUERY_INVENTORY);
                 st.setString(1,inventory.getId());
-                st.setString(2,inventory.getItemName());
-                st.setInt(3,inventory.getItemQuantity());
-                st.setString(4,inventory.getItemCategory().getId());
-                st.setString(5,inventory.getItemLocation().getId());
+                st.setString(2,inventory.getItem_name());
+                st.setInt(3,inventory.getItem_quantity());
+                st.setString(4,inventory.getItem_category().getId());
+                st.setString(5,inventory.getItem_location().getId());
                 st.executeUpdate();
 
                 con.commit();
             }
             catch(Exception exc)
             {
-                if(st!=null)
-                    st.close();
+
                 if(con!=null)
                     con.rollback();
+                throw exc;
+
             }
             finally {
+                if(st!=null)
+                    st.close();
                 if(con!=null)
                     con.close();
             }
@@ -206,113 +224,71 @@ public class InventoryServiceImpl implements InventoryService{
                 con.setAutoCommit(false);
 
                 st = con.prepareStatement(SqlQuery.MYSQL_UPDATE_QUERY_CATEGORY);
-                st.setString(1,inventory.getItemCategory().getId());
-                st.setString(2,inventory.getItemCategory().getCategoryName());
-                st.setString(3,inventory.getItemCategory().getId());
+                st.setString(1,inventory.getItem_category().getcategory_name());
+                st.setString(2,inventory.getItem_category().getId());
                 st.executeUpdate();
 
                 st = con.prepareStatement(SqlQuery.MYSQL_UPDATE_QUERY_LOCATION);
-                st.setString(1,inventory.getItemLocation().getId());
-                st.setString(2,inventory.getItemLocation().getLocationName());
-                st.setString(3,inventory.getItemLocation().getId());
+                st.setString(1,inventory.getItem_location().getLocation_name());
+                st.setString(2,inventory.getItem_location().getId());
                 st.executeUpdate();
 
                 st = con.prepareStatement(SqlQuery.MYSQL_UPDATE_QUERY_INVENTORY);
-                st.setString(1,inventory.getId());
-                st.setString(2,inventory.getItemName());
-                st.setInt(3,inventory.getItemQuantity());
-                st.setString(4,inventory.getItemCategory().getId());
-                st.setString(5,inventory.getItemLocation().getId());
+                st.setString(1,inventory.getItem_name());
+                st.setInt(2,inventory.getItem_quantity());
+                st.setString(3,inventory.getItem_category().getId());
+                st.setString(4,inventory.getItem_location().getId());
+                st.setString(5,inventoryId);
                 st.executeUpdate();
 
                 con.commit();
             }
             catch (Exception exc)
             {
-                if(st!=null)
-                    st.close();
                 if(con!=null)
                     con.rollback();
+                throw exc;
             }
             finally {
+                if(st!=null)
+                    st.close();
                 if(con!=null)
                     con.close();
             }
             return inventory;
     }
 
-    public void deleteInventory(String id) throws Exception
-    {
-            Connection con = null;
-            Statement st = null;
-
-            try
-            {
-                con = HikariCPService.getInstance().getConnection();
-                st = con.createStatement();
-
-                int rs = st.executeUpdate(SqlQuery.MYSQL_DELETE_QUERY_INVENTORY + id);
-            }
-            finally {
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }
-    }
-    public boolean validateUser(String user) throws Exception
-    {
+    public void deleteInventory(String id) throws Exception {
         Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
+        Statement st = null;
 
-        try
-        {
+        try {
             con = HikariCPService.getInstance().getConnection();
-            st = con.prepareStatement(SqlQuery.MYSQL_GET_USERNAME_AND_PASSWORD);
+            st = con.createStatement();
 
-            String[] authParts = user.split("\\s+");
-            String authInfo = authParts[1];
-            byte[] bytes  =  DatatypeConverter.parseBase64Binary(authInfo);
-            String decodedAuth = new String(bytes);
-            String[] userNameAndPassword = decodedAuth.split(":");
-
-            AuthenticationService sj = new AuthenticationService();
-            String hashedUsername = sj.getSHA256Hash(userNameAndPassword[0]);
-            String hashedPassword = sj.getSHA256Hash(userNameAndPassword[1]);
-            st.setString(1,hashedUsername);
-            st.setString(2,hashedUsername);
-            rs = st.executeQuery();
-
-            if(rs.next())
-                return true;
-            else
-                return false;
-        }
-        finally {
-            if(st!=null)
+            st.executeUpdate(SqlQuery.MYSQL_DELETE_QUERY_INVENTORY + id);
+        } finally {
+            if (st != null)
                 st.close();
-            if(rs!=null)
-                rs.close();
-            if(con!=null)
+            if (con != null)
                 con.close();
         }
     }
 
 
-    public Inventory getInventory(ResultSet rs) throws Exception
-    {
-        Inventory inventory = new Inventory();
+    public Inventory getInventoryId(ResultSet rs) throws SQLException {
+        Inventory inventory = null;
         while(rs.next())
         {
+            inventory = new Inventory();
             inventory.setId(rs.getString(1));
-            inventory.setItemName(rs.getString(2));
-            inventory.setItemQuantity(rs.getInt(3));
+            inventory.setItem_name(rs.getString(2));
+            inventory.setItem_quantity(rs.getInt(3));
 
             ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
             ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
             inventory.setItemCategoryId(itemCategory);
-            inventory.setItemLocation(itemLocation);
+            inventory.setItem_location(itemLocation);
         }
         return inventory;
     }
@@ -326,13 +302,13 @@ public class InventoryServiceImpl implements InventoryService{
             Inventory inventory = new Inventory();
 
             inventory.setId(rs.getString(1));
-            inventory.setItemName(rs.getString(2));
-            inventory.setItemQuantity(rs.getInt(3));
+            inventory.setItem_name(rs.getString(2));
+            inventory.setItem_quantity(rs.getInt(3));
 
             ItemCategory itemCategory = new ItemCategory(rs.getString(6),rs.getString(7));
             ItemLocation itemLocation = new ItemLocation(rs.getString(8),rs.getString(9));
             inventory.setItemCategoryId(itemCategory);
-            inventory.setItemLocation(itemLocation);
+            inventory.setItem_location(itemLocation);
 
             inventoryList.add(inventory);
         }

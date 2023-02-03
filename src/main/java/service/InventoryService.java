@@ -1,25 +1,34 @@
 package service;
 
 import domain.Inventory;
+import domain.sql.SqlQuery;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface InventoryService {
-    Inventory getInventoryById(String id) throws Exception;
 
-    List<Inventory> getInventoryAll() throws Exception;
+    //todo add only sql exception
+    //todo remove warnings
+    //todo move if else in list to service domain
+    //todo move validate user to authenticate service
+    //todo change one line for decoding the header
 
-    List<Inventory> getInventoryByCategory(String categoryId) throws Exception;
+    Inventory getInventoryById(String id) throws SQLException;
 
-    List<Inventory> getInventoryByLocation(String locationId) throws Exception;
+    List<Inventory> getInventory(String category,String location) throws SQLException;
 
-    List<Inventory> getInventoryByCategoryAndLocation(String categoryId,String locationId) throws Exception;
+    List<Inventory> getInventoryAll() throws SQLException;
 
-    Inventory addItem(Inventory inventory) throws Exception;
+    List<Inventory> getInventoryByCategory(String categoryId) throws SQLException;
+
+    List<Inventory> getInventoryByLocation(String locationId) throws SQLException;
+
+    List<Inventory> getInventoryByCategoryAndLocation(String categoryId,String locationId) throws SQLException;
+
+    Inventory addItem(Inventory inventory) throws SQLException;
 
     Inventory updateInventory(Inventory inventory,String inventoryId) throws Exception;
 
     void deleteInventory(String id) throws Exception;
-
-    boolean validateUser(String user) throws Exception;
 }

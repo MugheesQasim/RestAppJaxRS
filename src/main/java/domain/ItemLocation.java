@@ -6,16 +6,12 @@ public class ItemLocation {
     @JsonProperty("id")
     private String id;
     @JsonProperty("location_name")
-    private String locationName;
+    private String location_name;
 
-    public ItemLocation(String id,String locationName)
+    public ItemLocation(String id,String location_name)
     {
         this.id = id;
-        this.locationName = locationName;
-    }
-    public ItemLocation ()
-    {
-
+        this.location_name = location_name;
     }
     public String getId() {
         return id;
@@ -25,11 +21,11 @@ public class ItemLocation {
         this.id = id;
     }
 
-    public String getLocationName() {
-        return locationName;
+    public String getLocation_name() {
+        return location_name;
     }
 
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
+    public void setLocation_name(String location_name) {
+        this.location_name = location_name;
     }
 }

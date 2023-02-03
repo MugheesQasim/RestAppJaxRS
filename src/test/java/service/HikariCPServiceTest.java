@@ -2,13 +2,15 @@ package service;
 
 import Config.HikariCPService;
 import junit.framework.TestCase;
+import org.junit.Test;
 
-public class HikariCPServiceTest extends TestCase {
+public class HikariCPServiceTest {
 
+    @Test
     public void testGetConnection()
     {
         try{
-            HikariCPService.getConnection();
+            HikariCPService.getInstance().getConnection();
         }
         catch (Exception exc)
         {

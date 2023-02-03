@@ -2,26 +2,28 @@ package domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.ws.rs.BadRequestException;
+
 public class Inventory {
 
     @JsonProperty("id")
     private String id;
     @JsonProperty("item_name")
-    private String itemName;
+    private String item_name;
     @JsonProperty("item_quantity")
-    private int itemQuantity;
+    private int item_quantity;
     @JsonProperty("item_category")
-    private ItemCategory itemCategory;
+    private ItemCategory item_category;
     @JsonProperty("item_location")
-    private ItemLocation itemLocation;
+    private ItemLocation item_location;
 
-    public Inventory(String id,String itemName, int itemQuantity,ItemCategory itemCategory,ItemLocation itemLocation)
+    public Inventory(String id, String item_name, int item_quantity, ItemCategory item_category, ItemLocation item_location)
     {
         this.id = id;
-        this.itemName = itemName;
-        this.itemQuantity = itemQuantity;
-        this.itemCategory = itemCategory;
-        this.itemLocation = itemLocation;
+        this.item_name = item_name;
+        this.item_quantity = item_quantity;
+        this.item_category = item_category;
+        this.item_location = item_location;
     }
 
     public Inventory()
@@ -38,44 +40,66 @@ public class Inventory {
     {
         this.id = id;
     }
-    public int getItemQuantity()
+    public int getItem_quantity()
     {
-        return itemQuantity;
+        return item_quantity;
     }
-    public void setItemQuantity(int quantity)
+    public void setItem_quantity(int quantity) throws BadRequestException
     {
-        itemQuantity = quantity;
-    }
-
-    public String getItemName()
-    {
-        return itemName;
-    }
-    public void setItemName(String name)
-    {
-        itemName = name;
-    }
-    public ItemCategory getItemCategory()
-    {
-        return itemCategory;
-    }
-    public void setItemCategoryId(ItemCategory itemCategory)
-    {
-        this.itemCategory = itemCategory;
+        if(quantity<0)
+            throw new BadRequestException();
+        item_quantity = quantity;
     }
 
-    public ItemLocation getItemLocation()
+    public String getItem_name()
     {
-        return itemLocation;
+        return item_name;
     }
-    public void setItemLocation(ItemLocation itemLocation)
+    public void setItem_name(String name) throws BadRequestException
     {
-        this.itemLocation = itemLocation;
+        if(name==null)
+            throw new BadRequestException();
+        item_name = name;
+    }
+    public ItemCategory getItem_category()
+    {
+        return item_category;
+    }
+    public void setItemCategoryId(ItemCategory itemCategory) throws BadRequestException
+    {
+        if(itemCategory==null)
+            throw new BadRequestException();
+        this.item_category = itemCategory;
+    }
+
+    public ItemLocation getItem_location()
+    {
+        return item_location;
+    }
+    public void setItem_location(ItemLocation item_location) throws BadRequestException
+    {
+        if(item_location ==null)
+            throw new BadRequestException();
+        this.item_location = item_location;
+    }
+
+    public void validateObject() throws BadRequestException
+    {
+        if(item_name ==null)
+            throw new BadRequestException();
+        if(item_category ==null)
+            throw new BadRequestException();
+        if(item_location ==null)
+            throw new BadRequestException();
+        if(item_quantity <0)
+            throw new BadRequestException();
     }
 
     @Override
     public String toString()
     {
-        return "{" + id + "," + itemName + "," + itemQuantity + "," + "{" + itemCategory.getId() + "," + itemCategory.getCategoryName() + "}" + "," + "{"+ itemLocation.getId() + "," +itemLocation.getLocationName() + "}"+"}";
+        return "{" + id + "," + item_name + "," + item_quantity + "," + "{" + item_category.getId() + "," + item_category.getcategory_name() + "}" + "," + "{"+ item_location.getId() + "," + item_location.getLocation_name() + "}"+"}";
     }
+
+
 }

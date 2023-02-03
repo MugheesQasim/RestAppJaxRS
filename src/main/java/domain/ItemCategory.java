@@ -6,16 +6,12 @@ public class ItemCategory {
     @JsonProperty("id")
     private String id;
     @JsonProperty("category_name")
-    private String categoryName;
+    private String category_name;
 
-    public ItemCategory(String id,String categoryName)
+    public ItemCategory(String id,String category_name)
     {
         this.setId(id);
-        this.setCategoryName(categoryName);
-    }
-    public ItemCategory()
-    {
-
+        this.setCategory_name(category_name);
     }
     public String getId() {
         return id;
@@ -25,11 +21,11 @@ public class ItemCategory {
         this.id = id;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public String getcategory_name() {
+        return category_name;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 }

@@ -45,7 +45,7 @@ public class HikariCPService {
             instanceDataSource = new HikariDataSource( config );
     }
 
-        public static Connection getConnection() throws SQLException {
+        public Connection getConnection() throws SQLException {
                 return instanceDataSource.getConnection();
         }
 }
